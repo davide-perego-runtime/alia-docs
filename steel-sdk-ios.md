@@ -150,9 +150,9 @@ and also alerts
     [STLPeripheralUsageManager sharedInstance].enableAlerts = NO;```
 ```
 
-### Bluetooth
+### BLE (Bluetooth)
 
-#### 1. Discovery
+#### Scanning / discovery
 
 Start by instantiating its shared instance like this:
 ```objective-c
@@ -228,7 +228,7 @@ you have also the option to register listeners to act on notifications like this
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(lostNotification:) name:kCentralManagerDidLostPeripheralsNotification object:nil];
 ```
 
-#### 2. Actions
+#### Actions
 
 to operate on a smartlock device, you start from the address of device discovered and then get a Peripheral object to use on
 
@@ -252,3 +252,68 @@ to operate on a smartlock device, you start from the address of device discovere
 
     }];
 ```
+
+## Classes
+
+### SteelSDK (steel-sdk-ios)
+
+##### summary of methods
+
+The `SteelSDK` class in the `SteelSDK.h` library of the Steel SDK for iOS contains several methods. Here's the full list of the methods:
+
+1. `+ (SteelSDK * _Nonnull) sharedInstance`
+2. `- (void) provideAPIKey:(NSString * _Nonnull)key APISecret:(NSString * _Nonnull)secret`
+3. `- (void) provideCustomEndpoint:(NSString * _Nonnull)endpoint`
+4. `- (void) provideCustomGroupTags:(NSArray<NSString*> * _Nonnull)groupTags`
+5. `- (void) loginWithUsername:(NSString * _Nonnull)username password:(NSString * _Nonnull)password callback:(LoginCallback _Nullable)callback`
+6. `- (void) provideAuthToken:(NSString * _Nonnull)authToken callback:(LoginCallback _Nullable)callback`
+7. `- (User * _Nullable) getUser`
+8. `- (void) getPeripheralsCallback:(PeripheralsCallback _Nullable)callback`
+9. `- (NSArray<STLDiscoveredPeripheral*> * _Nonnull) getDiscoveredPeripherals`
+10. `- (void) accessControlCheckForPeripheral:(Peripheral * _Nonnull)peripheral customDate:(NSDate * _Nullable)date callback:(PrivilegeEvaluationCallback _Nullable)callback`
+11. `- (void) unlockPeripheral:(Peripheral * _Nonnull)peripheral evaluationCallback:(PrivilegeEvaluationCallback _Nullable)evaluationCallback responseCallback:(BluetoothResponseErrorCallback _Nullable)responseCallback`
+12. `- (void) lockPeripheral:(Peripheral * _Nonnull)peripheral evaluationCallback:(PrivilegeEvaluationCallback _Nullable)evaluationCallback responseCallback:(BluetoothResponseErrorCallback _Nullable)responseCallback`
+13. `- (void) initializeWithoutUser`
+14. `- (NSArray<Peripheral * > * _Nonnull) getPeripherals`
+15. `- (Peripheral * _Nullable) getPeripheralWithBtcode:(NSString * _Nonnull)btcode`
+16. `- (void) setPeripherals:(Peripherals * _Nonnull)peripherals`
+
+Please note that this is a high-level overview based on the header file. For a detailed understanding of the methods and their functionalities, you would typically refer to the source code of the SDK.
+
+##### basic reference
+
+Here are some details about a selection of the methods in the `SteelSDK` class:
+
+1. `+ (SteelSDK * _Nonnull) sharedInstance`: This class method returns the shared instance of the `SteelSDK` class.
+
+2. `- (void) provideAPIKey:(NSString * _Nonnull)key APISecret:(NSString * _Nonnull)secret`: This method is used to provide the API key and secret to the SDK.
+
+3. `- (void) provideCustomEndpoint:(NSString * _Nonnull)endpoint`: This method is used to provide a custom API endpoint.
+
+4. `- (void) provideCustomGroupTags:(NSArray<NSString*> * _Nonnull)groupTags`: This method is used to provide custom group tags.
+
+5. `- (void) loginWithUsername:(NSString * _Nonnull)username password:(NSString * _Nonnull)password callback:(LoginCallback _Nullable)callback`: This method is used to log in a user with a username and password.
+
+6. `- (void) provideAuthToken:(NSString * _Nonnull)authToken callback:(LoginCallback _Nullable)callback`: This method is used to provide an authorization token.
+
+7. `- (User * _Nullable) getUser`: This method returns the currently logged-in user.
+
+8. `- (void) getPeripheralsCallback:(PeripheralsCallback _Nullable)callback`: This method retrieves the user's peripherals (keys).
+
+9. `- (NSArray<STLDiscoveredPeripheral*> * _Nonnull) getDiscoveredPeripherals`: This method retrieves the discovered Bluetooth peripherals.
+
+10. `- (void) accessControlCheckForPeripheral:(Peripheral * _Nonnull)peripheral customDate:(NSDate * _Nullable)date callback:(PrivilegeEvaluationCallback _Nullable)callback`: This method checks if access can be granted to a peripheral at a specific time.
+
+11. `- (void) unlockPeripheral:(Peripheral * _Nonnull)peripheral evaluationCallback:(PrivilegeEvaluationCallback _Nullable)evaluationCallback responseCallback:(BluetoothResponseErrorCallback _Nullable)responseCallback`: This method requests an unlock command on a peripheral.
+
+12. `- (void) lockPeripheral:(Peripheral * _Nonnull)peripheral evaluationCallback:(PrivilegeEvaluationCallback _Nullable)evaluationCallback responseCallback:(BluetoothResponseErrorCallback _Nullable)responseCallback`: This method requests a lock command on a peripheral.
+
+13. `- (void) initializeWithoutUser`: This method initializes the SDK without a user.
+
+14. `- (NSArray<Peripheral * > * _Nonnull) getPeripherals`: This method returns the list of locks currently managed by the SDK.
+
+15. `- (Peripheral * _Nullable) getPeripheralWithBtcode:(NSString * _Nonnull)btcode`: This method returns the peripheral that has a specific Bluetooth code.
+
+16. `- (void) setPeripherals:(Peripherals * _Nonnull)peripherals`: This method sets the list of peripherals to be loaded inside the SDK.
+
+For a complete understanding of what each method does, you would need to look at the implementation of each method in the source code.

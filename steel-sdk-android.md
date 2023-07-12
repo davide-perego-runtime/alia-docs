@@ -179,7 +179,7 @@ example is taken from `LocksActivity.java` in `steel-sdk-example-android`
 
 Here is a working code example to manage BLE in SteelSDK.
 
-#### Scanning
+#### Scanning / discovery
 
 Setup
 ```java
