@@ -1,4 +1,4 @@
-# Alia Steel SDK Guides
+# Alia Steel SDK - Getting started guides
 
 # Android
 
@@ -6,4 +6,4 @@
 
 # iOS
 
-[steel-sdk-iso](steel-sdk-ios.md)
+[steel-sdk-ios](steel-sdk-ios.md)
