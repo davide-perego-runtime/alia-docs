@@ -101,7 +101,7 @@ steel.initializeWithoutUser();
 
 and terminate it at the end of application lifecycle
 ```java
-SteelSDK.getInstance().terminate();
+steel.terminate();
 ```
 
 That's it! You have now successfully integrated the Steel SDK into your Android project. You can now start using the various features and functionalities provided by the SDK.
@@ -109,14 +109,15 @@ That's it! You have now successfully integrated the Steel SDK into your Android 
 ### Locks
 
 Here is a working code example to manage locks in SteelSDK.
-`steelPeripheral` is the instance of SDK class
-`peripheralsAdapter` is an array adapter for a ListView
+- `steelPeripheral` is the instance of SDK class
+- `peripheralsAdapter` is an array adapter for a ListView
 
 ```java
     Log.i(TAG, "1. get SteelSDK singleton instance");
     steelPeripheral = SteelSDK.getInstance();
 ```
 
+<!-- still work in progress
 provide application id/secret:
 ```java
     Log.i(TAG, "2. activate SDK with project id/secret");
@@ -124,6 +125,7 @@ provide application id/secret:
     String projectSecret = "1234567890abcdef1234567890abcdef";
     steelPeripheral.provideAPIKey(this, projectKey, projectSecret);
 ```
+ -->
 
 manage existing peripherals in the SDK:
 ```java
@@ -143,7 +145,7 @@ check BLE permissions for the app using `STLAndroidPermissionsManager` class
     });
 ```
 
-login in Alia cloud API and retrieve locks info:
+login in Alia cloud API and retrieve locks info on success using a callback:
 ```java
     Log.i(TAG, "4. login with username / password");
 
@@ -314,7 +316,7 @@ final SteelPeripheral steelPeripheral = steel.getSteelPeripheral(selectedBtcode)
 steelPeripheral.sendIdentify();
 ```
 
-#### connection and testing
+#### connection and unlock
 or test them by making a connection and operating lock:
 ```java
 final SteelPeripheral steelPeripheral = steel.getSteelPeripheral(selectedBtcode);
@@ -409,3 +411,20 @@ Here are some details about a selection of the methods in the `SteelSDK` class:
 
 For a complete understanding of what each method does, you would need to look at the implementation of each method in the source code.
 
+### SteelBle (steel-ble-android)
+
+This library contains Bluetooth protocol code used to manage devices
+
+### SteelNetwork (steel-network-android)
+
+This library contains Network protocol code used to access REST APIs on Alia Cloud servers and retrieve informations on managed devices
+
+### SteelBase (steel-base-android)
+
+This library contains common classes and utilities used in other libraries
+
+## Notes
+
+On Android it is possible to connect to a device without scanning first with the library, while iOS does not allow it.
+
+The application, using Apple CoreBluetooth must discovery the device first and build a reference to it. For this reason on Steel for iOS the call to getOrRestorePeripheral will always return "null" without first scanning.

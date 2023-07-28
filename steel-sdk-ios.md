@@ -103,11 +103,13 @@ Start by instantiating its shared instance like this:
     SteelSDK *steel = [SteelSDK sharedInstance];
 ```
 
+<!-- still work in progress
 and setup the instance
 ```objective-c
     // activate the SDK with API key and secret
     [steel provideAPIKey:@"xxxxxxxxxxxxxxxxxxxxxxx" APISecret:@"xxxxxxxxxxxxxxxxxxxxxxx"];
 ```
+-->
 
 ### Login to Alia cloud service
 
@@ -120,7 +122,7 @@ calling `loginWithUsername` enable the SDK to retrieve locks and auth codes info
         if (success) {
 
             if (steel.getPeripherals.count > 0) {
-                [self reloadData];
+                // do something
             }
 
             // retrieve peripherals
@@ -128,8 +130,7 @@ calling `loginWithUsername` enable the SDK to retrieve locks and auth codes info
 
                 if (success) {
 
-                    // populate UI
-                    [self reloadData];
+                    // do something
                 }
 
             }];
@@ -147,7 +148,7 @@ you can disable some checks
 and also alerts
 ```objective-c
     // option: disable Steel SDK alerts for access control check
-    [STLPeripheralUsageManager sharedInstance].enableAlerts = NO;```
+    [STLPeripheralUsageManager sharedInstance].enableAlerts = NO;
 ```
 
 ### BLE (Bluetooth)
@@ -164,28 +165,28 @@ Bluetooth discovery uses a singleton instance of STLCentralManager from SteelBle
 setup the central manager properties
 
 ```objective-c
-    centralManager.monitorLostPeripherals = YES;
-    centralManager.deviceIdentifiers = centralManager.allDeviceIdentifiers;
-    centralManager.devicePreferences = @{
-                                         kCentralModeBtcodeRootOption: @"4CE2F1",
-                                         kCentralModeAutoScanOption: @NO,                    // scanner always on if possible (bluetooth turned on)
-                                         kCentralModeScannerFrequencyOption: @0.1,           // scanner update frequency [0-10s] 0 = real-time
-                                         kCentralModeSHA256ThresholdVersion: @3.0,
-                                         kCentralModeAutoConnectOption: @NO,
-                                         kCentralModeAutoAuthenticateOption: @YES,
-                                         kCentralModeStopScanWhenConnectOption: @NO,         // should the scanner stop when connecting to a peripheral? then
-                                         // when disconnected the scanner restarts if it was started before connection
-                                         };
+centralManager.monitorLostPeripherals = YES;
+centralManager.deviceIdentifiers = centralManager.allDeviceIdentifiers;
+centralManager.devicePreferences = @{
+    kCentralModeBtcodeRootOption: @"4CE2F1",
+    kCentralModeAutoScanOption: @NO,                    // scanner always on if possible (bluetooth turned on)
+    kCentralModeScannerFrequencyOption: @0.1,           // scanner update frequency [0-10s] 0 = real-time
+    kCentralModeSHA256ThresholdVersion: @3.0,
+    kCentralModeAutoConnectOption: @NO,
+    kCentralModeAutoAuthenticateOption: @YES,
+    kCentralModeStopScanWhenConnectOption: @NO,         // should the scanner stop when connecting to a peripheral? then
+                                                        // when disconnected the scanner restarts if it was started before connection
+    };
 ```
 
 and initialize it
 ```objective-c
-    [centralManager initialize];
+[centralManager initialize];
 ```
 
 you can customize the scanner frequency (s)
 ```objective-c
-    _centralManager.scannerFrequency = @1;
+_centralManager.scannerFrequency = @1;
 ```
 
 and listen to state changes like BT activation and subsequent start scanning
@@ -204,18 +205,14 @@ when a peripheral is discovered you can run your code to update a view.
 The boolean **isNewPeripheral** when YES means that it's the first time the scanner finds it (since it was lost)
 ```objective-c
     _centralManager.onDidDiscoverPeripheral = ^(STLDiscoveredPeripheral *peripheral, BOOL isNewPeripheral) {
-        if (myviewcontroller.isViewLoaded && myviewcontroller.view.window) {
-            [myviewcontroller.tableView reloadData];
-        }
+        // do something
     };
 ```
 
 the same can be done when one or more periperals are lost
 ```objective-c
     _centralManager.onDidLostPeripherals = ^(NSArray *btcodes) {
-        if (myviewcontroller.isViewLoaded && myviewcontroller.view.window) {
-            [myviewcontroller.tableView reloadData];
-        }
+        // do something
     };
 ```
 
@@ -228,28 +225,27 @@ you have also the option to register listeners to act on notifications like this
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(lostNotification:) name:kCentralManagerDidLostPeripheralsNotification object:nil];
 ```
 
-#### Actions
+#### Unlock
 
-to operate on a smartlock device, you start from the address of device discovered and then get a Peripheral object to use on
+to operate on a smartlock device, you start from the address of discovered device and then get a Peripheral object
 
-**getPeripheralWithBtcode**
 ```objective-c
     NSString *btcode = centralManager.discoveredBtcodes[ indexOfDevice ];
     SteelSDK *steel = [SteelSDK sharedInstance];
     Peripheral *peripheral = [steel getPeripheralWithBtcode:btcode];
     if (peripheral) {
-        ...
+        // do something
     }
 ```
 
-**unlockPeripheral**
+peripheral can then be operated
 ```objective-c
     [steel unlockPeripheral:peripheral evaluationCallback:^(BOOL success, Privilege *privilege, SteelActionError error, NSString *localizedErrorMessage) {
         if (!success) {
-            [self.view makeToast:localizedErrorMessage];
+            // do something
         }
     } responseCallback:^(BOOL success, NSError *error) {
-
+        // in case of error
     }];
 ```
 
@@ -317,3 +313,25 @@ Here are some details about a selection of the methods in the `SteelSDK` class:
 16. `- (void) setPeripherals:(Peripherals * _Nonnull)peripherals`: This method sets the list of peripherals to be loaded inside the SDK.
 
 For a complete understanding of what each method does, you would need to look at the implementation of each method in the source code.
+
+### SteelBle (steel-ble-ios)
+
+This library contains Bluetooth protocol code used to manage devices
+
+### SteelNetwork (steel-network-ios)
+
+This library contains Network protocol code used to access REST APIs on Alia Cloud servers and retrieve informations on managed devices
+
+### SteelFoundation (steel-foundation-ios)
+
+This library contains common classes and utilities used in other libraries
+
+### SteelCore (steel-core-ios)
+
+This library contains common classes (bluetooth, managers, models, protocols, etc.)
+
+## Notes
+
+On Android it is possible to connect to a device without scanning first with the library, while iOS does not allow it.
+
+The application, using Apple CoreBluetooth must discovery the device first and build a reference to it. For this reason on Steel for iOS the call to getOrRestorePeripheral will always return "null" without first scanning.
